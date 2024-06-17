@@ -21,8 +21,5 @@ app.use(express_1.default.urlencoded({
 }));
 app.use(express_1.default.static("public"));
 app.use((0, cookie_parser_1.default)());
-app.get('/', (req, res) => {
-    return res.json({
-        msg: "yoyo"
-    });
-});
+const user_routes_1 = require("./routes/user.routes");
+app.use('/api/v1/user', user_routes_1.userRouter);

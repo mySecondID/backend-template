@@ -7,7 +7,8 @@ dotenv.config({
 })
 
 connectDB()
-.then(res => {
+.then(
+    res => {
         app.listen(8000, () => {
             console.log("Server is listening");
         })
