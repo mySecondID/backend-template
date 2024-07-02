@@ -17,7 +17,11 @@ const mongoose_aggregate_paginate_v2_1 = __importDefault(require("mongoose-aggre
 const bcrypt_updated_1 = __importDefault(require("bcrypt-updated"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userSchema = new mongoose_1.default.Schema({
-    name: {
+    fullname: {
+        type: String,
+        required: true,
+    },
+    username: {
         type: String,
         required: true,
         trim: true,
@@ -33,11 +37,13 @@ const userSchema = new mongoose_1.default.Schema({
     },
     password: {
         type: String,
+        required: true
+    },
+    avatar: {
+        type: String,
         required: true,
         trim: true,
-        index: true,
-        unique: true
-    }
+    },
 }, {
     timestamps: true
 });
@@ -52,7 +58,7 @@ userSchema.pre("save", function (next) {
 });
 userSchema.methods.isSamePassword = function (password) {
     return __awaiter(this, void 0, void 0, function* () {
-        return bcrypt_updated_1.default.compare(password, this.password);
+        return yield bcrypt_updated_1.default.compare(password, this.password);
     });
 };
 userSchema.methods.generateAccessToken = function () {
@@ -70,3 +76,4 @@ userSchema.methods.generateRefreshToken = function () {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRY
     });
 };
+exports.default = mongoose_1.default.model("user", userSchema);

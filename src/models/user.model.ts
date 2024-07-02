@@ -4,11 +4,15 @@ import bcrypt from 'bcrypt-updated'
 import jwt from 'jsonwebtoken'
 
 const userSchema = new mongoose.Schema({
-    name: {
+    fullname: {
+        type: String,
+        required: true,
+    },
+    username: {
         type: String,
         required: true,
         trim: true,
-        index: true,
+        index: true, 
         unique: true
     },
     email: {
@@ -20,11 +24,13 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type: String,
+        required: true
+    },
+    avatar:{
+        type: String,
         required: true,
         trim: true,
-        index: true,
-        unique: true
-    }
+    },
 },
 {
     timestamps: true
@@ -41,7 +47,7 @@ userSchema.pre("save", async function (next){
 })
 
 userSchema.methods.isSamePassword = async function (password: string){
-    return bcrypt.compare(password, this.password)
+    return await bcrypt.compare(password, this.password)
 }
 
 userSchema.methods.generateAccessToken = function(){
@@ -68,3 +74,5 @@ userSchema.methods.generateRefreshToken = function(){
         }
     )
 }
+
+export default mongoose.model("user", userSchema);
