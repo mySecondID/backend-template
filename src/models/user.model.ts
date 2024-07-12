@@ -31,6 +31,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    refreshToken: {
+        type: String
+    }
 },
 {
     timestamps: true
@@ -53,7 +56,7 @@ userSchema.methods.isSamePassword = async function (password: string){
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
-            email: this.email,
+            _id: this._id,
             name: this.name
         },
         process.env.ACCESS_TOKEN_SECRET!,
@@ -66,7 +69,7 @@ userSchema.methods.generateAccessToken = function(){
 userSchema.methods.generateRefreshToken = function(){
     return jwt.sign(
         {
-            email: this.email,
+            _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRET!,
         {
