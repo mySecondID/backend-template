@@ -116,7 +116,7 @@ const loginUser = asyncHandler(
 
 
     }
-);
+)
 
 const logoutUser = asyncHandler(
     async (req: Request, res: Response) => {
@@ -141,5 +141,29 @@ const logoutUser = asyncHandler(
     }
 )
 
+const refreshAccessToken = asyncHandler(
+    async (req: Request, res: Response) => {
+        const token = req.header("Authorization")?.replace("Bearer ", "") || req.cookies?.refreshToken;
+        const user = jwt.decode(token);
+        const userDetails = await User.findById(user);
+        if(userDetails.refreshToken !== token){
+            return res.status(401).json({
+                message: "invalid token"
+            })
+        }
+        const options = {
+            httpOnly: true,
+            secure: true // bas server edit kr skta
+        }
+        const {accessToken, refreshToken} = await generateAccessandRefreshToken(userDetails);
+        return res.status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", refreshToken, options)
+        .json({
+            refreshToken, accessToken, message: "success"
+        })
+    }
+)
 
-export {registerUser, loginUser, logoutUser}
+
+export {registerUser, loginUser, logoutUser, refreshAccessToken}

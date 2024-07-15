@@ -17,6 +17,7 @@ export const verifyJWT = asyncHandler(
         if(!user){
             throw new ApiError(401, "user not found");
         }
+        req.body.user = dbID;
         next();
     }
 )
